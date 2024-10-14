@@ -14,11 +14,15 @@ public:
 	int init();
 	void run();
 
+	Application& operator=(const Application&) = delete;
+	Application& operator=(const Application&&) = delete;
+	Application(const Application&) = delete;
+	Application(const Application&&) = delete;
+
 private:
 	void on_start();
 	void update_settings();
 	void event_handler();
-	//void input_handler();
 	void mouse_state_update();
 	void get_console_command();
 	void draw_node(const Node_graphic&);
