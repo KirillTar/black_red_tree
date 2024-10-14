@@ -11,6 +11,13 @@ public:
 	friend class Tree_Iterator<T>;
 	friend class Tree_Const_Iterator<T>;
 
+	using value_type = T;
+	using pointer = T*;
+	using const_pointer = const T*;
+	using reference = T&;
+	using const_reference = const T&;
+	using size_type = std::size_t;
+
 	using iterator = Tree_Iterator<T>;
 	using const_iterator = Tree_Const_Iterator<T>;
 	using reverse_iterator = std::reverse_iterator<iterator>;
@@ -18,13 +25,13 @@ public:
 
 public:
 	Tree();
-	Tree(const Tree&);
+	Tree(const Tree&) noexcept;
 	Tree(Tree&&) noexcept;
-	Tree(std::initializer_list<T>);
+	Tree(std::initializer_list<T>) noexcept;
 
-	Tree& operator= (Tree<T>);
+	Tree& operator= (Tree<T>) noexcept;
 	Tree& operator= (Tree<T>&&) noexcept;
-	Tree& operator= (std::initializer_list<T>);
+	Tree& operator= (std::initializer_list<T>) noexcept;
 
 	~Tree();
 
@@ -38,9 +45,9 @@ public:
 	}
 
 	void insert(T);
-	void clear();
-	size_t size() const;
-	bool empty() const;
+	inline void clear();
+	inline size_t size() const;
+	inline bool empty() const;
 
 	iterator erase(iterator);
 
@@ -62,7 +69,7 @@ public:
 	const_reverse_iterator crbegin() const;
 	const_reverse_iterator crend() const;
 
-	Node<T>* find_node(T);
+	Node<T>* find_node(T) const noexcept;
 	Node<T>* get_root(); /*exists only for graphics, not in real container*/
 
 private:
@@ -119,14 +126,14 @@ Tree<T>::~Tree() {
 }
 
 template<typename T>
-Tree<T>::Tree(std::initializer_list<T> list) : Tree() {
+Tree<T>::Tree(std::initializer_list<T> list) noexcept : Tree() {
 	for (auto it = list.begin(); it != list.end(); ++it) {
 		insert(*it); 
 	}
 }
 
 template<typename T>
-Tree<T>::Tree(const Tree& other_tree) : Tree() {
+Tree<T>::Tree(const Tree& other_tree) noexcept : Tree() {
 	if (!other_tree.empty()) {
 		for (Tree<int>::const_iterator iter = other_tree.begin(); iter != other_tree.end(); ++iter) {
 			insert(*iter);
@@ -140,7 +147,7 @@ Tree<T>::Tree(Tree&& other_tree) noexcept : Tree() {
 }
 
 template<typename T>
-Tree<T>& Tree<T>::operator=(Tree<T> other_tree) {
+Tree<T>& Tree<T>::operator=(Tree<T> other_tree) noexcept {
 	swap(*this, other_tree);
 	return *this;
 }
@@ -152,7 +159,7 @@ Tree<T>& Tree<T>::operator=(Tree<T>&& other_tree) noexcept {
 }
 
 template<typename T>
-Tree<T>& Tree<T>::operator=(std::initializer_list<T> list) {
+Tree<T>& Tree<T>::operator=(std::initializer_list<T> list) noexcept {
 	clear();
 	for (auto it = list.begin(); it != list.end(); ++it) {
 		insert(*it);
@@ -161,7 +168,7 @@ Tree<T>& Tree<T>::operator=(std::initializer_list<T> list) {
 }
 
 template<typename T>
-Node<T>* Tree<T>::find_node(T value) {
+Node<T>* Tree<T>::find_node(T value) const noexcept {
 	Node<T>* current_node = m_root;
 
 	while (current_node && current_node->value != value) {
@@ -235,7 +242,6 @@ void Tree<T>::rotate_right(Node<T>* node) {
 	}
 	else {
 		m_root = left;
-		//std::cout << "new root (rr): " << m_root->value << std::endl;
 	}
 
 	node->left = left->right;
@@ -260,7 +266,6 @@ void Tree<T>::rotate_left(Node<T>* node) {
 	}
 	else {
 		m_root = right;
-		//std::cout << "new root (rl): " << m_root->value << std::endl;
 	}
 
 	node->right = right->left;
@@ -355,7 +360,6 @@ void Tree<T>::insert(T value) {
 		m_root->color = Color::Black;
 		m_first->parent = m_root;
 		m_last->parent = m_root;
-		//std::cout << "new root (appended): " << m_root->value << std::endl;
 		m_tree_size++;
 		return;
 	}
@@ -381,10 +385,6 @@ void Tree<T>::insert(T value) {
 	}
 
 	Node<T>* new_node = new Node<T>(value, parent);
-	//std::cout << "new node value: " << new_node->value << " parent v: " << new_node->parent->value << std::endl;
-
-	if (mooving_only_left && mooving_only_right)
-		std::cout << "bounds error!" << std::endl;
 
 	if (mooving_only_left)
 	{
@@ -398,18 +398,15 @@ void Tree<T>::insert(T value) {
 
 	if (!parent) {
 		m_root = new_node;
-		//std::cout << "new root (new node replace): " << m_root->value << std::endl;
 	}
 
 	if (value < parent->value)
 	{
 		parent->left = new_node;
-		//std::cout << "add to left" << std::endl;
 	}
 	else
 	{
 		parent->right = new_node;
-		//std::cout << "add to right" << std::endl;
 	}
 
 	balance_tree_case_1(new_node);
@@ -584,7 +581,6 @@ typename Tree<T>::iterator Tree<T>::erase(iterator iter) {
 		m_root = nullptr;
 		m_first->parent = m_last;
 		m_last->parent = nullptr;
-		//std::cout << "root deleted" << std::endl;
 		m_tree_size = 0;
 		return begin();
 	}
@@ -679,7 +675,7 @@ void Tree<T>::delete_all_nodes(Node<T>* node) {
 }
 
 template<typename T>
-void Tree<T>::clear() {
+inline void Tree<T>::clear() {
 	delete_all_nodes(m_root);
 	m_root = nullptr;
 	m_first->parent = m_last;
@@ -688,12 +684,12 @@ void Tree<T>::clear() {
 }
 
 template<typename T>
-size_t Tree<T>::size() const {
+inline size_t Tree<T>::size() const {
 	return this->m_tree_size;
 }
 
 template<typename T>
-bool Tree<T>::empty() const {
+inline bool Tree<T>::empty() const {
 	return m_tree_size == 0;
 }
 
