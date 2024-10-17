@@ -6,7 +6,7 @@
 
 template<typename T>
 class Tree {
-
+	
 public:
 	friend class Tree_Iterator<T>;
 	friend class Tree_Const_Iterator<T>;
@@ -46,7 +46,7 @@ public:
 
 	void insert(T);
 	inline void clear();
-	inline size_t size() const;
+	inline size_type size() const;
 	inline bool empty() const;
 
 	iterator erase(iterator);
@@ -684,7 +684,7 @@ inline void Tree<T>::clear() {
 }
 
 template<typename T>
-inline size_t Tree<T>::size() const {
+inline Tree<T>::size_type Tree<T>::size() const {
 	return this->m_tree_size;
 }
 
