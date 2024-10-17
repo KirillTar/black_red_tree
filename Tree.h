@@ -684,7 +684,7 @@ inline void Tree<T>::clear() {
 }
 
 template<typename T>
-inline Tree<T>::size_type Tree<T>::size() const {
+inline typename Tree<T>::size_type Tree<T>::size() const {
 	return this->m_tree_size;
 }
 

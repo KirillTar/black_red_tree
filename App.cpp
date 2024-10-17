@@ -33,7 +33,7 @@ int Application::init() {
 
 void Application::on_start() {
 
-	int sz = /*rand() % 20 + */1000;
+	int sz = /*rand() % 20 + */100;
 	for (int i = 0; i < sz; i++) {
 		m_tree.insert(rand() % 200);
 	}
