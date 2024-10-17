@@ -3,7 +3,6 @@
 
 int main(int argc, char* argv[]) {
 
-	A a;
 	Application app;
 	app.init();
 	app.run();
